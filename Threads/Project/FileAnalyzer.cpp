@@ -2,7 +2,7 @@
 
 AnalysisResult FileAnalyzer::analyze(const File &file) {
     AnalysisResult res;
-    
+
     const std::vector<std::string>& tokens = file.getContent().words;
     if (tokens.empty())
         return res;
@@ -16,6 +16,7 @@ AnalysisResult FileAnalyzer::analyze(const File &file) {
     
     size_t totalLen = std::accumulate(tokens.begin(), tokens.end(), 0UL,
         [](size_t sum, const std::string &w) { return sum + w.size(); });
+        
     res.averageWordLength = static_cast<double>(totalLen) / tokens.size();
     
     return res;

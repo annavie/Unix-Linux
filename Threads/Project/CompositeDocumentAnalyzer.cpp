@@ -36,7 +36,6 @@ void CompositeDocumentAnalyzer::updateFromFileResults(AnalysisResult &agg, size_
     }
 }
 
-
 void CompositeDocumentAnalyzer::updateFromSubDocuments(AnalysisResult &agg, size_t &totalLen, bool &firstEncounter, const Document &doc) {
     const DocumentContent &dc = doc.getContent();
     for (const auto &subDocPtr : dc.documents) {
