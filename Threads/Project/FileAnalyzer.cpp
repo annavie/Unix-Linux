@@ -2,6 +2,7 @@
 
 AnalysisResult FileAnalyzer::analyze(const File &file) {
     AnalysisResult res;
+    
     const std::vector<std::string>& tokens = file.getContent().words;
     if (tokens.empty())
         return res;

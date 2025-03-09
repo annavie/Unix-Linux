@@ -16,7 +16,7 @@ public:
     File(const File &other);
     File& operator=(const File &other);
     File(File &&other) noexcept = default;
-    File& operator=(File &&other) noexcept = default;
+    File& operator=(File &&other) noexcept = default;  
     void setContent(const FileContent &fc);
     FileContent getContent() const;
     std::string getFileName() const;

@@ -1,0 +1,72 @@
+Document Analysis Project
+
+This project is a C++ application that analyzes documents and their associated files.
+The tool processes a hierarchy of documents, calculates word statistics (total words, longest word, shortest word, average word length), and aggregates the results.
+
+The project performs the following tasks:
+
+File Loading and Tokenization:
+Reads text files  and tokenizes their content (removing punctuation and converting to lowercase). This is done using the FileContentLoader class which fills a FileContent structure.
+
+Document Composition:
+Documents are modeled by the Document class and can contain multiple File objects as well as nested sub-documents. The DocumentBuilder class provides helper functions to construct documents from file names and to build composite documents with sub-documents.
+
+Analysis:
+Each file is analyzed by the FileAnalyzer class which computes metrics such as:
+
+Total word count
+Longest word
+Shortest word
+Average word length
+The analysis is performed concurrently for each file using std::async to compute the longest and shortest words in parallel.
+
+The CompositeDocumentAnalyzer class aggregates file-level results and recursively analyzes sub-documents, producing an overall AnalysisResult for the entire Document.
+
+Concurrent Processing:
+The AnalysisManager class manages the analysis of multiple documents concurrently. It launches asynchronous tasks for each top-level Document, collects their results using futures, and prints both aggregated document-level and individual file-level analyses. A mutex is used to ensure thread-safe printing.
+Key Classes and Their Responsibilities
+FileContent:
+A simple structure containing the raw text of a file and a vector of tokenized words.
+
+File:
+Represents an individual file. It stores the file name and its FileContent. It uses a mutex to ensure thread-safe access and provides custom copy constructors/assignment operators.
+
+FileContentLoader:
+A utility class with static methods to load file contents from disk and tokenize the text. The tokens are stored in FileContent::words.
+
+DocumentContent:
+Contains a vector of File objects and a vector of sub-documents. This supports a hierarchical document structure.
+
+Document:
+Represents a high-level document that aggregates files and sub-documents. It uses mutexes for thread safety and implements deep copying via a helper function (cloneContent) to correctly copy sub-documents.
+
+DocumentBuilder:
+A helper class that constructs Document objects from lists of file names. It provides two static methods:
+
+buildDocumentWithFiles: Creates a Document containing only files.
+buildCompositeDocument: Creates a Document that includes both files and sub-documents.
+AnalysisResult:
+A structure that holds analysis metrics such as total word count, longest word, shortest word, and average word length.
+
+DocumentAnalyzer (Interface):
+An abstract interface that defines a function analyze(const Document&) returning an AnalysisResult.
+
+FileAnalyzer:
+Analyzes a single File's content. It uses std::async to concurrently compute the longest and shortest words from pre-tokenized data, and aggregates metrics like total word count and average word length.
+
+CompositeDocumentAnalyzer:
+Implements the DocumentAnalyzer interface. It recursively analyzes a Document by processing all files (using FileAnalyzer) and then aggregating results from any sub-documents.
+
+AnalysisManager:
+Coordinates concurrent analysis of multiple Documents. It uses std::async to launch asynchronous tasks for each Document, collects results via futures, and prints the analysis results. It also uses a mutex to ensure that printing is thread-safe.
+
+Design Decisions: Concurrency and Thread Management
+I use std::async for asynchronous tasks because it automatically creates, manages, and cleans up threads. It returns a std::future that simplifies result retrieval and exception handling, eliminating the need to manually join threads. This leads to cleaner, safer, and more maintainable code.When use std::async, any exceptions thrown inside the asynchronous task are stored in the associated std::future and rethrown when  call get(). This built-in mechanism simplifies error handling compared to managing threads directly.
+Instead of manually managing thread creation and joining,simply call std::async with a callable and its arguments. This leads to more concise and maintainable code.
+
+How to Build
+Open a terminal in the project directory and run the following command:
+g++ -std=c++17  main.cpp File.cpp Document.cpp CompositeDocumentAnalyzer.cpp AnalysisManager.cpp FileContentLoader.cpp FileAnalyzer.cpp -o Analysis
+After compiling, run the application with:
+./Analysis
+

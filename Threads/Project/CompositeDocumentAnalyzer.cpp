@@ -6,6 +6,7 @@ AnalysisResult CompositeDocumentAnalyzer::analyze(const Document &doc) {
     bool firstEncounter = true;
     updateFromFileResults(aggregated, totalLen, firstEncounter, doc);
     updateFromSubDocuments(aggregated, totalLen, firstEncounter, doc);
+    
     if (aggregated.totalWords > 0)
         aggregated.averageWordLength = static_cast<double>(totalLen) / aggregated.totalWords;
     return aggregated;
@@ -34,6 +35,7 @@ void CompositeDocumentAnalyzer::updateFromFileResults(AnalysisResult &agg, size_
         updateAggregation(agg, totalLen, firstEncounter, fileRes);
     }
 }
+
 
 void CompositeDocumentAnalyzer::updateFromSubDocuments(AnalysisResult &agg, size_t &totalLen, bool &firstEncounter, const Document &doc) {
     const DocumentContent &dc = doc.getContent();
