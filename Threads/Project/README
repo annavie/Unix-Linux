@@ -1,4 +1,4 @@
-Document Analysis Project
+##Document Analysis Project##
 
 This project is a C++ application that analyzes documents and their associated files.
 The tool processes a hierarchy of documents, calculates word statistics (total words, longest word, shortest word, average word length), and aggregates the results.
