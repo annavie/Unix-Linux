@@ -1,25 +1,30 @@
-#ifndef ANALYSISMANAGER_H
-#define ANALYSISMANAGER_H
+#ifndef ANALYSISMANAGER_HPP
+#define ANALYSISMANAGER_HPP
 
-#include "CompositeDocumentAnalyzer.h"
-#include "Document.h"
-#include "FileAnalyzer.h"
 #include <vector>
 #include <future>
 #include <mutex>
-#include <iostream>
+#include "Document.h"
+#include "DocumentAnalyzer.h"
 
 class AnalysisManager {
 public:
     AnalysisManager(std::vector<Document> docs);
+
     void runAnalysis();
+
 private:
+    AnalysisResult analyzeDocument(const Document &doc);
+
+    void printResult(const AnalysisResult &res);
+
+    void printFileResults();
+
+    void printFileResultsForDocument(const Document &doc);
+
     std::vector<Document> documents;
     std::vector<std::future<AnalysisResult>> futures;
     std::mutex printMutex;
-    AnalysisResult analyzeDocument(const Document &doc);
-    void printResult(const AnalysisResult &res);
-    void printFileResults();
 };
 
-#endif // ANALYSISMANAGER_H
+#endif 

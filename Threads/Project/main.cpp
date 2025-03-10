@@ -16,6 +16,7 @@ int main() {
             "doc2_file.txt"
         }, {subDoc});
         
+        
         AnalysisManager manager({doc1, doc2});
         manager.runAnalysis();
         std::cout << "All analyses completed.\n";

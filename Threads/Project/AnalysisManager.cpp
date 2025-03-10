@@ -1,4 +1,8 @@
 #include "AnalysisManager.h"
+#include "CompositeDocumentAnalyzer.h"
+#include "FileAnalyzer.h"
+#include <iostream>
+#include <future>
 
 AnalysisManager::AnalysisManager(std::vector<Document> docs)
     : documents(std::move(docs))
@@ -10,10 +14,12 @@ void AnalysisManager::runAnalysis() {
                                       &AnalysisManager::analyzeDocument,
                                       this, doc));
     }
+
     for (auto &f : futures) {
         AnalysisResult res = f.get();
         printResult(res);
     }
+
     printFileResults();
 }
 
@@ -33,16 +39,25 @@ void AnalysisManager::printResult(const AnalysisResult &res) {
 
 void AnalysisManager::printFileResults() {
     std::lock_guard<std::mutex> lock(printMutex);
-    FileAnalyzer fileAnalyzer;
     for (const auto &doc : documents) {
-        const DocumentContent &dc = doc.getContent();
-        for (const auto &f : dc.files) {
-            AnalysisResult fileRes = fileAnalyzer.analyze(f);
-            std::cout << "[File Analysis] " << f.getFileName() << "\n"
-                      << "  Total Words: " << fileRes.totalWords << "\n"
-                      << "  Longest Word: " << fileRes.longestWord << "\n"
-                      << "  Shortest Word: " << fileRes.shortestWord << "\n"
-                      << "  Average Word Length: " << fileRes.averageWordLength << "\n\n";
-        }
+        printFileResultsForDocument(doc);
+    }
+}
+
+void AnalysisManager::printFileResultsForDocument(const Document &doc) {
+    FileAnalyzer fileAnalyzer;
+    const DocumentContent &dc = doc.getContent();
+    
+    for (const auto &f : dc.files) {
+        AnalysisResult fileRes = fileAnalyzer.analyze(f);
+        std::cout << "[File Analysis] " << f.getFileName() << "\n"
+                  << "  Total Words: " << fileRes.totalWords << "\n"
+                  << "  Longest Word: " << fileRes.longestWord << "\n"
+                  << "  Shortest Word: " << fileRes.shortestWord << "\n"
+                  << "  Average Word Length: " << fileRes.averageWordLength << "\n\n";
+    }
+    
+    for (const auto &subDocPtr : dc.documents) {
+        printFileResultsForDocument(*subDocPtr);
     }
 }

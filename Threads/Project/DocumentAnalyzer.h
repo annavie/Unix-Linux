@@ -8,7 +8,6 @@ struct AnalysisResult {
     std::string longestWord;
     std::string shortestWord;
     double averageWordLength = 0.0;
-
 };
 
 class DocumentAnalyzer {

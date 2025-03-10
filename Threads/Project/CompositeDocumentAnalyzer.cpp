@@ -4,7 +4,9 @@ AnalysisResult CompositeDocumentAnalyzer::analyze(const Document &doc) {
     AnalysisResult aggregated{};
     size_t totalLen = 0;
     bool firstEncounter = true;
+    
     updateFromFileResults(aggregated, totalLen, firstEncounter, doc);
+    
     updateFromSubDocuments(aggregated, totalLen, firstEncounter, doc);
     
     if (aggregated.totalWords > 0)

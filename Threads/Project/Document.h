@@ -16,8 +16,10 @@ public:
     Document() = default;
     Document(const Document &other);
     Document& operator=(const Document &other);
+
     void setContent(const DocumentContent &c);
     DocumentContent getContent() const;
+    
 private:
     static DocumentContent cloneContent(const DocumentContent &src);
     mutable std::mutex mtx;
